@@ -58,6 +58,7 @@
     <Compile Include="Enums\PlayerColour.cs" />
     <Compile Include="Game\BoardSettings.cs" />
     <Compile Include="Game\Gamer.cs" />
+    <Compile Include="Game\PCPlayer.cs" />
     <Compile Include="Pieces\Bishop.cs" />
     <Compile Include="Pieces\EmptyPiece.cs" />
     <Compile Include="Game\Player.cs" />

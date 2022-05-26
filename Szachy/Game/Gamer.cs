@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Szachy.Pieces;
 
 namespace Szachy.Game
 {
@@ -33,9 +34,20 @@ namespace Szachy.Game
             return attackingPoints;
         }
 
-        public void makeMove()
+        public void makeMove(Board board, PlayerColour color)
         {
-            return;
+
+        }
+
+        public List<MovementAndValue> GetAllMovementsWithValues()
+        {
+            List<MovementAndValue> movements = new List<MovementAndValue>();
+            foreach(Piece piece in pieces)
+            {
+                movements.AddRange(piece.GetAllMovementsWithValues());
+            }
+           
+            return movements;
         }
     }
 }

@@ -20,6 +20,7 @@ namespace Szachy.Pieces
         public Point position { get; set; }
         public Game.Board board { get; private set; }
 
+        public int Value { get => 1; }
 
         public PawnPointer(PlayerColour ownerColour, int x, int y, Board chessBoard)
         {
@@ -37,7 +38,11 @@ namespace Szachy.Pieces
         {
             return new List<Point>();
         }
-
+        public List<MovementAndValue> GetAllMovementsWithValues()
+        {
+            var result = new List<MovementAndValue>();
+            return result;
+        }
         public int move(Point where)
         {
             return -1 ;

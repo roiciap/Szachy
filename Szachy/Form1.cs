@@ -35,9 +35,9 @@ namespace Szachy
             boardButtons = new Button[8, 8];
             piecesBitmap = new Bitmap[6, 2];
             loadPiecesBitmap();
-            board = new Game.Board(new Game.Gamer(), new Game.Gamer());
+            board = new Game.Board(new Game.Gamer(), new Game.PCPlayer());
             GenerateBoardPanel();
-            reveseBoard();
+           // reveseBoard();
             refreshBoard();
             currentPiece = null;
             tmpb = new Game.Board(new Game.Gamer(), new Game.Gamer());
@@ -75,7 +75,7 @@ namespace Szachy
                     boardButtons[i,j].Location = new Point(i*width,j*height);
                     boardPanel.Controls.Add(boardButtons[i,j]);
 
-                    boardButtons[i, j].Tag=new Point(i,j);
+                    boardButtons[i, j].Tag=new Point(i,7-j);
                 }
             }
             refreshBoard();
@@ -88,7 +88,8 @@ namespace Szachy
             {
                 for (int j = 0; j < 8; j++)
                 {
-                    if (i % 2 == j % 2)
+                    Point pos = (Point)boardButtons[i, j].Tag;
+                    if (pos.X % 2 == pos.Y % 2)
                     {
                         boardButtons[i, j].BackColor = Color.White;
                     }
@@ -96,9 +97,9 @@ namespace Szachy
                     {
                         boardButtons[i, j].BackColor = Color.Black;
                     }
-                    if (board.getPiece(i, j).PieceType != PiecesType.NONE)
+                    if (board.getPiece(pos.X, pos.Y).PieceType != PiecesType.NONE)
                     {
-                        boardButtons[i,j].Image=piecesBitmap[(int )board.getPiece(i,j).PieceType,(int )board.getPiece(i,j).colour];
+                        boardButtons[i,j].Image=piecesBitmap[(int )board.getPiece(pos.X,pos.Y).PieceType,(int )board.getPiece(pos.X, pos.Y).colour];
                     }
                     else
                     {
@@ -119,11 +120,13 @@ namespace Szachy
                 }
             }
             boardButtons = reversed;
-            for(int i = 0; i < 8; i++)
+            for(int i= 0; i < 8; i++)
             {
-                for(int j = 0; j < 8; j++)
+                for(int j = 0; j < 4; j++)
                 {
-                    boardButtons[i, j].Tag = new Point(i,j);
+                    var tmp=boardButtons[i, j].Tag;
+                    boardButtons[i, j].Tag = boardButtons[7 - i, 7 - j].Tag;
+                    boardButtons[7 - i, 7 - j].Tag = tmp;
                 }
             }
         }
@@ -133,8 +136,7 @@ namespace Szachy
         {
             lock (lokokontigo)
             {
-                var thread = new Thread(() =>
-                {
+
 
 
                     if (!board.players[(int)board.turn].realPerson)
@@ -148,68 +150,76 @@ namespace Szachy
 
                     Pieces.Piece clickedPiece = board.getPiece(position.X, position.Y);
                     refreshBoard();
-                    if (clickedPiece.colour == board.turn)
-                    {
-                        currentPiece = clickedPiece;
-                        List<Point> moves =  currentPiece.GetPossibleMoves();
+                if (clickedPiece.colour == board.turn)
+                {
+                    currentPiece = clickedPiece;
+                    List<Point> moves = currentPiece.GetPossibleMoves();
 
-                        Point zerozero = (Point)boardButtons[0, 0].Tag;
-                        if (zerozero.X == 0)
+                    Point zerozero = (Point)boardButtons[0, 0].Tag;
+                    if (zerozero.X == 0)
+                    {
+                        foreach (Point move in moves)
                         {
-                            foreach (Point move in moves)
+                            boardButtons[move.X,7- move.Y].BackColor = Color.Red;
+                        }
+                    }
+                    else
+                    {
+                        foreach (Point move in moves)
+                        {
+                            boardButtons[7 - move.X,  move.Y].BackColor = Color.Red;
+                        }
+                    }
+                    return;
+                }
+
+                if (clickedPiece.colour != board.turn)
+                {
+                    if (currentPiece != null)
+                    {
+                        //Console.WriteLine("a");
+                        if (currentPiece.checkMove(position.X, position.Y))
+                        {
+                            int val = currentPiece.move(position);
+                            currentPiece = null;
+                            if (val < 0)
                             {
-                                boardButtons[move.X, move.Y].BackColor = Color.Red;
+                                MessageBox.Show("bron krola");
+                            }
+
+                            if (val >= 200)
+                            {
+                                MessageBox.Show("szachmat");
+                                val = val % 10;
+                                if (board.turn == PlayerColour.WHITE) val = -val;
+                                listBox1.Items.Add(val.ToString() + "#");
+                            }
+                            else if (val >= 100)
+                            {
+                                MessageBox.Show("dales szacha!");
+                                val = val % 10;
+                                if (board.turn == PlayerColour.WHITE) val = -val;
+                                listBox1.Items.Add(val.ToString() + "+");
+                            }
+                            else
+                            {
+                                if (board.turn == PlayerColour.WHITE) val = -val;
+                                listBox1.Items.Add(val.ToString());
+                            }
+                            refreshBoard();
+                            if (!board.players[(int)(board.turn)].realPerson)
+                            {
+                                board.players[(int)(board.turn)].makeMove(board, board.turn);
+                                refreshBoard();
                             }
                         }
                         else
                         {
-                            foreach (Point move in moves)
-                            {
-                                boardButtons[7 - move.X, 7 - move.Y].BackColor = Color.Red;
-                            }
-                        }
-                        return;
-                    }
-
-                    if (clickedPiece.colour != board.turn)
-                    {
-                        if (currentPiece != null)
-                        {
-                            //Console.WriteLine("a");
-                            if (currentPiece.checkMove(position.X, position.Y))
-                            {
-                              //  Console.WriteLine("b");
-                                //Game.Board backup=board.Clone();
-                                int val = currentPiece.move(position);
-                                currentPiece = null;
-                                if (val < 0)
-                                {
-                                    MessageBox.Show("bron krola");
-                                    // board = backup.Clone();
-                                }
-
-                                if (val >= 200)
-                                {
-                                    MessageBox.Show("szachmat");
-                                }
-                                else if (val >= 100)
-                                {
-                                    MessageBox.Show("dales szacha!");
-                                }
-
-                                refreshBoard();
-                            }
-                            else
-                            {
-                               // Console.WriteLine("b");
-                                currentPiece = null;
-                            }
+                            currentPiece = null;
                         }
                     }
                 }
-                );
-                thread.Start();
-                thread.Join();
+
 
             }
         }
@@ -223,6 +233,11 @@ namespace Szachy
         {
             board = tmpb.Clone();
             refreshBoard();
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

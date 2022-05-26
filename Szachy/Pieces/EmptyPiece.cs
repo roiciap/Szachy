@@ -18,7 +18,7 @@ namespace Szachy.Pieces
         public Point position { get; set; }
         public Game.Board board { get; private set; }
 
-
+        public int Value { get => 0; }
 
 
         public EmptyPiece(int x, int y,Game.Board chessBoard)
@@ -51,6 +51,11 @@ namespace Szachy.Pieces
         public int move(Point where)
         {
             return -1;   
+        }
+
+        public List<MovementAndValue> GetAllMovementsWithValues()
+        {
+            return new List<MovementAndValue>();
         }
     }
 }

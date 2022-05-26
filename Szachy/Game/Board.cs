@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Szachy.Game
 {
+
     public class Board
     {
         
@@ -24,10 +25,11 @@ namespace Szachy.Game
         public Board(Player White , Player Black)
         {
             board = new Pieces.Piece[8, 8];
-            GenerateStartingBoard();
+
             turn = PlayerColour.WHITE;
             SETTINGS= new BoardSettings();
-            players=new Player[2];
+            GenerateStartingBoard();
+            players =new Player[2];
             players[1] = White;
             players[0] = Black;
             refreshPlayerPieces();
@@ -36,9 +38,10 @@ namespace Szachy.Game
         public Board(Player White, Player Black, BoardSettings settings)
         {
             board = new Pieces.Piece[8, 8];
-            GenerateStartingBoard();
             turn = PlayerColour.WHITE;
             SETTINGS = settings;
+            GenerateStartingBoard();
+
             players = new Player[2];
             players[1] = White;
             players[0] = Black;
@@ -47,7 +50,6 @@ namespace Szachy.Game
 
         public Board(Player White, Player Black, BoardSettings settings, Pieces.Piece[,] chessBoard)
         {
-            board = chessBoard;
             board = new Pieces.Piece[8, 8];
             GenerateStartingBoard();
             turn = PlayerColour.WHITE;
@@ -68,33 +70,55 @@ namespace Szachy.Game
                 }
             }
 
-            for (int i = 0; i < 8; i++)
-            {
-               board[i, 1] = new Pieces.Pawn(PlayerColour.WHITE, i, 1, this);
-               board[i, 6] = new Pieces.Pawn(PlayerColour.BLACK, i, 6, this);
-            }
+             for (int i = 0; i < 8; i++)
+               {
+                  board[i, 1] = new Pieces.Pawn(PlayerColour.WHITE, i, 1, this);
+                 board[i, 6] = new Pieces.Pawn(PlayerColour.BLACK, i, 6, this);
+               }
+             
+              // board[4, 0] = new Pieces.King(PlayerColour.WHITE, 4, 0, this);
+               //board[4, 7] = new Pieces.King(PlayerColour.BLACK, 4, 7, this);
+               board[3, 0] = new Pieces.Queen(PlayerColour.WHITE, 3, 0, this);
+               board[3, 7] = new Pieces.Queen(PlayerColour.BLACK, 3, 7, this);
+               board[0, 0] = new Pieces.Rook(PlayerColour.WHITE, 0, 0, this);
+              // board[7,0]=new Pieces.Rook(PlayerColour.WHITE,7,0, this);
+               board[0, 7] = new Pieces.Rook(PlayerColour.BLACK, 0, 7, this);
+               //board[7, 7] = new Pieces.Rook(PlayerColour.BLACK, 7, 7, this);
+              board[1, 0] = new Pieces.Knight(PlayerColour.WHITE, 1, 0, this);
+              // board[6, 0] = new Pieces.Knight(PlayerColour.WHITE, 6, 0, this);
+               board[1, 7] = new Pieces.Knight(PlayerColour.BLACK, 1, 7, this);
+               //board[6, 7] = new Pieces.Knight(PlayerColour.BLACK, 6, 7, this);
+             board[2, 0] = new Pieces.Bishop(PlayerColour.WHITE, 2, 0, this);
+             // board[5, 0] = new Pieces.Bishop(PlayerColour.WHITE, 5, 0, this);
+              board[2, 7] = new Pieces.Bishop(PlayerColour.BLACK, 2, 7, this);
+             // board[5, 7] = new Pieces.Bishop(PlayerColour.BLACK, 5, 7, this);
 
-            board[3, 0] = new Pieces.King(PlayerColour.WHITE, 3, 0, this);
-            board[3, 7] = new Pieces.King(PlayerColour.BLACK, 3, 7, this);
-            board[4, 0] = new Pieces.Queen(PlayerColour.WHITE, 4, 0, this);
-            board[4, 7] = new Pieces.Queen(PlayerColour.BLACK, 4, 7, this);
-            board[0, 0] = new Pieces.Rook(PlayerColour.WHITE, 0, 0, this);
-            board[7,0]=new Pieces.Rook(PlayerColour.WHITE,7,0, this);
-            board[0, 7] = new Pieces.Rook(PlayerColour.BLACK, 0, 7, this);
-            board[7, 7] = new Pieces.Rook(PlayerColour.BLACK, 7, 7, this);
-            board[1, 0] = new Pieces.Knight(PlayerColour.WHITE, 1, 0, this);
-            board[6, 0] = new Pieces.Knight(PlayerColour.WHITE, 6, 0, this);
-            board[1, 7] = new Pieces.Knight(PlayerColour.BLACK, 1, 7, this);
-            board[6, 7] = new Pieces.Knight(PlayerColour.BLACK, 6, 7, this);
-            board[2, 0] = new Pieces.Bishop(PlayerColour.WHITE, 2, 0, this);
-            board[5, 0] = new Pieces.Bishop(PlayerColour.WHITE, 5, 0, this);
-            board[2, 7] = new Pieces.Bishop(PlayerColour.BLACK, 2, 7, this);
-            board[5, 7] = new Pieces.Bishop(PlayerColour.BLACK, 5, 7, this);
+            /*
 
+                       */
+            board[6, 0] = new Pieces.King(PlayerColour.WHITE, 6, 0, this);
+            board[6, 7] = new Pieces.King(PlayerColour.BLACK, 6, 7, this);
+            board[5, 0] = new Pieces.Rook(PlayerColour.WHITE, 5, 0, this);
+            board[5, 7] = new Pieces.Rook(PlayerColour.BLACK, 5, 7, this);
+            board[2, 3] = new Pieces.Bishop(PlayerColour.WHITE, 2, 3, this);
+            board[2, 4] = new Pieces.Bishop(PlayerColour.BLACK, 2, 4, this);
+            board[3, 1] = new Pieces.EmptyPiece();
+            board[4, 1] = new Pieces.EmptyPiece();
+            board[3, 6] = new Pieces.EmptyPiece();
+            board[4, 6] = new Pieces.EmptyPiece();
+            board[3, 2] = new Pieces.Pawn(PlayerColour.WHITE, 3, 2, this);
+            board[4, 3] = new Pieces.Pawn(PlayerColour.WHITE, 4, 3, this);
+            board[3, 5] = new Pieces.Pawn(PlayerColour.BLACK, 3, 5, this);
+            board[4, 4] = new Pieces.Pawn(PlayerColour.BLACK, 4, 4, this);
+            board[5, 2] = new Pieces.Knight(PlayerColour.WHITE, 5, 2, this);
+            board[5, 5] = new Pieces.Knight(PlayerColour.BLACK, 5, 5, this);
 
-
+            SETTINGS.castle[0, 0] = false;
+            SETTINGS.castle[0, 1] = false;
+            SETTINGS.castle[1, 0] = false;
+            SETTINGS.castle[1, 1] = false;
         }
-        
+
         public Pieces.Piece getPiece(int x , int y)
         {
             if(x>=0 && y>=0 && x<8 && y<8)
@@ -124,6 +148,30 @@ namespace Szachy.Game
                     }
                 }
             }
+            for(int i = 0; i < whitePieces.Count; i++)
+            {
+                for(int j = 0; j < whitePieces.Count - (i+1); j++)
+                {
+                    if (whitePieces[j].PieceType < whitePieces[j + 1].PieceType)
+                    {
+                        var tmp = whitePieces[j];
+                        whitePieces[j]=whitePieces[j + 1];
+                        whitePieces[j + 1] = tmp;
+                    }
+                }
+            }
+            for (int i = 0; i < blackPieces.Count; i++)
+            {
+                for (int j = 0; j < blackPieces.Count - (i + 1); j++)
+                {
+                    if (blackPieces[j].PieceType < blackPieces[j + 1].PieceType)
+                    {
+                        var tmp = blackPieces[j];
+                        blackPieces[j] = blackPieces[j + 1];
+                        blackPieces[j + 1] = tmp;
+                    }
+                }
+            }
             players[1].pieces = whitePieces;
             players[0].pieces = blackPieces;
 
@@ -134,8 +182,8 @@ namespace Szachy.Game
         {
             Board b = Clone();
 
-            refreshPlayerPieces();
-            foreach (Pieces.Piece piece in players[(int)turn].pieces)
+
+            foreach (Pieces.Piece piece in b.players[(int)turn].pieces)
             {
                 if (piece.PieceType == PiecesType.KING)
                 {
@@ -152,7 +200,7 @@ namespace Szachy.Game
                 if (piece.PieceType == PiecesType.KING)
                 {
 
-                    if (players[((int)turn)].getAttackingPoints().Contains(piece.position))
+                    if (b.players[((int)turn)].getAttackingPoints().Contains(piece.position))
                     {
                         if (b.turn == PlayerColour.WHITE)
                         {
@@ -193,10 +241,18 @@ namespace Szachy.Game
                     {
                         return -1;
                     }
-                    int value=0;
+                    int value=board[to.X,to.Y].Value*10;
+                    if (value == 1) {//jezeli atakujemy miejsce gdzie mozna wykonać bicie w przelocie a figura to nie pion
+                        if (board[to.X, to.Y].PieceType == PiecesType.NONE)
+                        {
+                            if (board[from.X, from.Y].PieceType != PiecesType.PAWN)
+                            {
+                                value = 0;
+                            }
+                        }
+                    }
                     Pieces.Piece backup = board[to.X,to.Y];
 
-                    refreshPlayerPieces();
 
                     if (board[from.X, from.Y].PieceType == PiecesType.PAWN)
                     {
@@ -220,6 +276,7 @@ namespace Szachy.Game
                             Point pawnToKillPos = board[to.X, to.Y].position;
                             board[pawnToKillPos.X, pawnToKillPos.Y] = new Pieces.EmptyPiece();
                         }
+
 
                     }
 
@@ -282,14 +339,22 @@ namespace Szachy.Game
                         board[from.X, from.Y] = board[to.X, to.Y];
                         board[from.X, from.Y].position = from;
                         board[to.X, to.Y] = backup;
-                        refreshPlayerPieces();
                         return -2;
+                    }
+                    else if (to.Y == 7 || to.Y == 0)
+                    {
+                        if (board[to.X,to.Y].PieceType==PiecesType.PAWN)
+                        {
+                            board[to.X, to.Y] = new Pieces.Queen(board[to.X, to.Y].colour, to.X, to.Y, this);
+                            check=kingUnderAttack();
+
+                        }
                     }
                     if (check == 1)
                     {
                         value += 100;
                     }
-                    if (check == 2)
+                    else if (check == 2)
                     {
                         value += 200;
                     }
@@ -308,7 +373,6 @@ namespace Szachy.Game
                             }
                         }
                     }
-                    refreshPlayerPieces();
 
                    
 
@@ -340,10 +404,23 @@ namespace Szachy.Game
             board = chessBoard;
         }
 
+        public Board PCClone()
+        {
+            Board clone = Clone();
+            clone.players[0] = new PCPlayer();
+            clone.players[1] = new PCPlayer();
+            clone.refreshPlayerPieces();
+            return clone;
+        }
+
         public Board Clone()
         {
             Player white=new Gamer();
             Player black=new Gamer();
+            if(!players[1].realPerson)
+              white=new Gamer();
+            if(!players[0].realPerson)
+             black=new Gamer();
             BoardSettings setings=new BoardSettings(SETTINGS.castle);
             Board clone = new Board(white, black, setings); 
 
@@ -398,5 +475,9 @@ namespace Szachy.Game
 
             return clone;
         }
+
+
+
+
     }
 }

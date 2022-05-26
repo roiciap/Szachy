@@ -20,6 +20,7 @@ namespace Szachy.Pieces
 
         public Point position { get; set; }
         public Game.Board board { get; private set; }
+        public int Value { get => 9; }
 
 
 
@@ -104,29 +105,59 @@ namespace Szachy.Pieces
         public List<Point> GetPossibleMoves()
         {
             List<Point> possibleMoves = new List<Point>();
+            int x = position.X;
+            int y = position.Y;
             for (int i = 0; i < 8; i++)
             {
-                for(int j = 0; j < 8; j++)
+                if (checkMove(i, y - (x - i)))
                 {
-                    if(checkMove(i, j)) possibleMoves.Add(new Point(i, j));
+                    possibleMoves.Add(new Point(i, position.Y - (position.X - i)));
                 }
+                if (checkMove(i, y + (x - i)))
+                {
+                    possibleMoves.Add(new Point(i, position.Y + (position.X - i)));
+                }
+                if ( checkMove(i, position.Y)) possibleMoves.Add(new Point(i, position.Y));
+                if ( checkMove(position.X, i)) possibleMoves.Add(new Point(position.X, i));
             }
+
+           /* for (int j = 0; j < 8; j++)
+            {
+
+                for (int i = j; i < possibleMoves.Count; i++)
+                {
+                    if (board.getPiece(possibleMoves[j].X, possibleMoves[j].Y).Value < board.getPiece(possibleMoves[i].X, possibleMoves[i].Y).Value)
+                    {
+                        var tmp = possibleMoves[j];
+                        possibleMoves[j] = possibleMoves[i];
+                        possibleMoves[i] = tmp;
+                    }
+                }
+            }*/
             return possibleMoves;
         }
-
+        public List<MovementAndValue> GetAllMovementsWithValues()
+        {
+            var possibleMoves = GetPossibleMoves();
+            var result = new List<MovementAndValue>();
+            foreach (var move in possibleMoves)
+            {
+                result.Add(new MovementAndValue()
+                {
+                    from = position,
+                    to = move,
+                    value = board.getPiece(move.X, move.Y).Value
+                });
+            }
+            return result;
+        }
         public int move(Point where)
         {
             if (checkMove(where.X, where.Y))
             {
                 int result = 0;
-                var thread = new Thread(() =>
-                {
-                    result = board.moved(position, where);
-                });
-                thread.Start();
-                thread.Join();
+                result = board.moved(position, where);
                 return result;
-
             }
             return -1;
         }

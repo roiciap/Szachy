@@ -8,7 +8,7 @@ namespace Szachy.Game
 {
     public class BoardSettings
     {
-        public bool[,] moved ;
+        //public bool[,] moved ;
         public bool[,] castle;
 
         public BoardSettings()
@@ -25,7 +25,7 @@ namespace Szachy.Game
         }
         public BoardSettings( bool[,] canCastle)
         {
-            moved = new bool[8, 2];
+           // moved = new bool[8, 2];
             castle = new bool[2, 2];
 
             for (int i = 0; i < 2; i++)

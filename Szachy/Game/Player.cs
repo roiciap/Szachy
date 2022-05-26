@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Szachy.Pieces;
 
 namespace Szachy.Game
 {
@@ -14,8 +15,9 @@ namespace Szachy.Game
 
         List<Point> getAttackingPoints();
 
-        void makeMove();
-        
-        
+        void makeMove(Board board, PlayerColour color);
+        List<MovementAndValue> GetAllMovementsWithValues();
+
+
     }
 }

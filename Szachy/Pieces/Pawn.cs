@@ -19,7 +19,7 @@ namespace Szachy.Pieces
 
         public Point position { get; set; }
         public Game.Board board { get; private set; }
-
+        public int Value { get => 1; }
 
 
         public Pawn(PlayerColour ownerColour,int x, int y, Board chessBoard)
@@ -85,14 +85,33 @@ namespace Szachy.Pieces
         public List<Point> GetPossibleMoves()
         {
             List<Point> possibleMoves = new List<Point>();
-            for(int i = 0; i < 8; i++)
-            {
-                for(int j=0; j < 8; j++)
-                {
-                    if(checkMove(i,j)) possibleMoves.Add(new Point(i,j));
-                }
-            }
+            int dir = 1;
+            int x = position.X;
+            int y = position.Y;
+            if (colour == PlayerColour.BLACK) dir = -1;
+            if (checkMove(x + 1, y + dir)) possibleMoves.Add(new Point(x + 1, y + dir));
+            if (checkMove(x - 1, y + dir)) possibleMoves.Add(new Point(x - 1, y + dir));
+            if (checkMove(x, y + 2 * dir)) possibleMoves.Add(new Point(x, y + 2 * dir));
+            if (checkMove(x, y + dir)) possibleMoves.Add(new Point(x, y + dir));
+
+
+
             return possibleMoves;
+        }
+        public List<MovementAndValue> GetAllMovementsWithValues()
+        {
+            var possibleMoves = GetPossibleMoves();
+            var result=new List<MovementAndValue>();
+            foreach(var move in possibleMoves)
+            {
+                result.Add(new MovementAndValue()
+                {
+                    from=position,
+                    to=move,
+                    value=board.getPiece(move.X,move.Y).Value
+                });
+            }
+            return result;
         }
 
         public int move(Point where)
@@ -100,14 +119,8 @@ namespace Szachy.Pieces
             if (checkMove(where.X, where.Y))
             {
                 int result = 0;
-                var thread = new Thread(() =>
-                {
-                    result = board.moved(position, where);
-                });
-                thread.Start();
-                thread.Join();
+                result = board.moved(position, where);
                 return result;
-
             }
             return -1;
         }

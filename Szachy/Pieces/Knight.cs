@@ -20,7 +20,7 @@ namespace Szachy.Pieces
         public Point position { get; set; }
         public Game.Board board { get; private set; }
 
-
+        public int Value { get => 3; }
 
         public Knight(PlayerColour ownerColour, int x, int y, Board chessBoard)
         {
@@ -51,6 +51,7 @@ namespace Szachy.Pieces
                     }
                 }
             }
+            
             return false;
         }
 
@@ -71,19 +72,29 @@ namespace Szachy.Pieces
             if (checkMove(x + 1, y - 2)) possibleMoves.Add(new Point(x + 1, y - 2));
             return possibleMoves;
         }
-
+        public List<MovementAndValue> GetAllMovementsWithValues()
+        {
+            var possibleMoves = GetPossibleMoves();
+            var result = new List<MovementAndValue>();
+            foreach (var move in possibleMoves)
+            {
+                result.Add(new MovementAndValue()
+                {
+                    from = position,
+                    to = move,
+                    value = board.getPiece(move.X, move.Y).Value
+                });
+            }
+            return result;
+        }
         public int move(Point where)
         {
             if (checkMove(where.X, where.Y))
             {
                 int result = 0;
-                var thread = new Thread(() =>
-                {
-                    result = board.moved(position, where);
-                });
-                thread.Start();
-                thread.Join();
+                result = board.moved(position, where);
                 return result;
+
             }
             return -1;
         }
