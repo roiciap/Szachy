@@ -34,7 +34,7 @@ namespace Szachy.Game
             return attackingPoints;
         }
 
-        public void makeMove(Board board, PlayerColour color)
+        public void makeMove(Board board, PlayerColour color, Form1 form)
         {
 
         }

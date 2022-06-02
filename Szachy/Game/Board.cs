@@ -21,7 +21,54 @@ namespace Szachy.Game
 
         public BoardSettings SETTINGS;
 
-
+        public static int[] KnightPos={-50,-40,-30,-30,-30,-30,-40,-50,
+                                -40,-20,  0,  0,  0,  0,-20,-40,
+                                -30,  0, 10, 15, 15, 10,  0,-30,
+                                -30,  5, 15, 20, 20, 15,  5,-30,
+                                -30,  0, 15, 20, 20, 15,  0,-30,
+                                -30,  5, 10, 15, 15, 10,  5,-30,
+                                -40,-20,  0,  5,  5,  0,-20,-40,
+                                -50,-40,-30,-30,-30,-30,-40,-50};
+        public static int[] PawnPos = { 0,  0,  0,  0,  0,  0,  0,  0,
+                               40, 40, 40, 40, 40, 40, 40, 40,
+                                10, 10, 20, 30, 30, 20, 10, 10,
+                                 5,  5, 10, 25, 25, 10,  5,  5,
+                                 0,  0,  0, 20, 20,  0,  0,  0,
+                                 5, -5,-10,  0,  0,-10, -5,  5,
+                                 5, 10, 10,-20,-20, 10, 10,  5,
+                                 0,  0,  0,  0,  0,  0,  0,  0};
+        public static int[] BishopPos ={-20,-10,-10,-10,-10,-10,-10,-20,
+                                -10,  0,  0,  0,  0,  0,  0,-10,
+                                -10,  0,  5, 10, 10,  5,  0,-10,
+                                -10,  5,  5, 10, 10,  5,  5,-10,
+                                -10,  0, 10, 10, 10, 10,  0,-10,
+                                -10, 10, 10, 10, 10, 10, 10,-10,
+                                -10,  5,  0,  0,  0,  0,  5,-10,
+                                -20,-10,-10,-10,-10,-10,-10,-20};
+        public static int[] RookPos={  0,  0,  0,  0,  0,  0,  0,  0,
+                                  5, 10, 10, 10, 10, 10, 10,  5,
+                                 -5,  0,  0,  0,  0,  0,  0, -5,
+                                 -5,  0,  0,  0,  0,  0,  0, -5,
+                                 -5,  0,  0,  0,  0,  0,  0, -5,
+                                 -5,  0,  0,  0,  0,  0,  0, -5,
+                                 -5,  0,  0,  0,  0,  0,  0, -5,
+                                  0,  0,  0,  5,  5,  0,  0,  0 };
+        public static int[] QueenPos ={-20,-10,-10, -5, -5,-10,-10,-20,
+                                -10,  0,  0,  0,  0,  0,  0,-10,
+                                -10,  0,  5,  5,  5,  5,  0,-10,
+                                 -5,  0,  5,  5,  5,  5,  0, -5,
+                                  0,  0,  5,  5,  5,  5,  0, -5,
+                                -10,  5,  5,  5,  5,  5,  0,-10,
+                                -10,  0,  5,  0,  0,  0,  0,-10,
+                                -20,-10,-10, -5, -5,-10,-10,-20};
+        public static int[] KingPos ={-30,-40,-40,-50,-50,-40,-40,-30,
+                                -30,-40,-40,-50,-50,-40,-40,-30,
+                                -30,-40,-40,-50,-50,-40,-40,-30,
+                                -30,-40,-40,-50,-50,-40,-40,-30,
+                                -20,-30,-30,-40,-40,-30,-30,-20,
+                                -10,-20,-20,-20,-20,-20,-20,-10,
+                                 20, 20,  0,  0,  0,  0, 20, 20,
+                                 20, 30, 10,  0,  0, 10, 30, 20};
         public Board(Player White , Player Black)
         {
             board = new Pieces.Piece[8, 8];
@@ -41,7 +88,6 @@ namespace Szachy.Game
             turn = PlayerColour.WHITE;
             SETTINGS = settings;
             GenerateStartingBoard();
-
             players = new Player[2];
             players[1] = White;
             players[0] = Black;
@@ -58,6 +104,45 @@ namespace Szachy.Game
             players[1] = White;
             players[0] = Black;
             refreshPlayerPieces();
+        }
+
+
+        public static int getPositionValue(PiecesType pieceType,Point position,PlayerColour color)
+        {
+            int x = position.X, y = position.Y;
+            if (color == PlayerColour.WHITE)
+            {
+                y = 7 - y;
+                x = 7 - x;
+            }
+            if (pieceType == PiecesType.PAWN)
+            {
+                return PawnPos[y * 8 + x]/5;
+            }
+            if (pieceType == PiecesType.KNIGHT)
+            {
+                return KnightPos[y * 8 + x] / 5;
+            }
+            if (pieceType == PiecesType.BISHOP)
+            {
+                return BishopPos[y * 8 + x] / 5;
+            }
+            if(pieceType== PiecesType.ROOK)
+            {
+
+                return RookPos[y * 8 + x] / 5;
+            }
+            if(pieceType == PiecesType.QUEEN) 
+            {
+
+                return QueenPos[y * 8 + x] / 5;
+            }
+            if (pieceType == PiecesType.KING)
+            {
+                return KingPos[y * 8 + x] / 5;
+            }
+            return 0;
+
         }
 
         private void GenerateStartingBoard()
@@ -239,9 +324,10 @@ namespace Szachy.Game
                 {
                     if(board[from.X,from.Y].colour != turn)
                     {
-                        return -1;
+                        return -100;
                     }
                     int value=board[to.X,to.Y].Value*10;
+                    int initialPosValue= Board.getPositionValue(board[from.X, from.Y].PieceType, from, board[from.X, from.Y].colour);
                     if (value == 1) {//jezeli atakujemy miejsce gdzie mozna wykonać bicie w przelocie a figura to nie pion
                         if (board[to.X, to.Y].PieceType == PiecesType.NONE)
                         {
@@ -339,7 +425,7 @@ namespace Szachy.Game
                         board[from.X, from.Y] = board[to.X, to.Y];
                         board[from.X, from.Y].position = from;
                         board[to.X, to.Y] = backup;
-                        return -2;
+                        return -200;
                     }
                     else if (to.Y == 7 || to.Y == 0)
                     {
@@ -347,16 +433,17 @@ namespace Szachy.Game
                         {
                             board[to.X, to.Y] = new Pieces.Queen(board[to.X, to.Y].colour, to.X, to.Y, this);
                             check=kingUnderAttack();
-
+                            value += 80;
                         }
                     }
+                    value += Board.getPositionValue(board[to.X, to.Y].PieceType, to, board[to.X, to.Y].colour)-initialPosValue;
                     if (check == 1)
                     {
-                        value += 100;
+                        value += 1000;
                     }
                     else if (check == 2)
                     {
-                        value += 200;
+                        value += 2000;
                     }
 
 

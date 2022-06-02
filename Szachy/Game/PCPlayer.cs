@@ -119,7 +119,7 @@ namespace Szachy.Game
                         {
                             canMove = true;
                         }
-                        if (value >= 200)
+                        if (value >= 2000)
                         {
                             if (myTurn)
                             {
@@ -145,9 +145,9 @@ namespace Szachy.Game
                         }
 
                         if (myTurn)
-                         totalValue= value%100 + prevValue;
+                         totalValue= value%1000 + prevValue;
                         else
-                            totalValue= prevValue - value%100;
+                            totalValue= prevValue - value%1000;
                         if(myTurn && totalValue > best.value) 
                         { 
                             best.value = totalValue;
@@ -208,7 +208,7 @@ namespace Szachy.Game
                         {
                             canMove = true;
                         }
-                        if (value >= 200)
+                        if (value >= 2000)
                         {
                             if (myTurn)
                             {
@@ -234,9 +234,9 @@ namespace Szachy.Game
                         }
 
                         if (myTurn)
-                            totalValue = minmax(clone, color, depth - 1, value%100 + prevValue, max, min);
+                            totalValue = minmax(clone, color, depth - 1, value%1000 + prevValue, max, min);
                         else
-                            totalValue = minmax(clone, color, depth - 1, prevValue - value%100, max, min);
+                            totalValue = minmax(clone, color, depth - 1, prevValue - value%1000, max, min);
 
 
 
@@ -335,117 +335,14 @@ namespace Szachy.Game
 
         }
    
-        public void makeMove(Board board,PlayerColour color)
+        public void makeMove(Board board,PlayerColour color,Form1 form)
         {
             var  result= minmax(board, color, searchDepth,0, -99999, 99999);
 
                Console.WriteLine(result.value+","+result.moves+":"+result.from.X+"/"+result.from.Y+"->" + result.where.X + "/" + result.where.Y);
-            board.moved(result.from, result.where);
-            /*
-
-            Console.WriteLine("zaczynam : " + depth);
-            bool myPiece = true;
-            Board b = board.PCClone();
-            if (b.turn != color)
-            {
-                myPiece = false;
-            }
-            PieceMovement best = new PieceMovement()
-            {
-                value = -1000,
-                from = new Point(9, 9),
-                where = new Point(9, 9),
-            };
-
-
-            if (depth == 0 && !myPiece)
-            {
-                if (!b.players[(int)b.turn].pieces.Any())
-                {
-                    if (myPiece)
-                    {
-                        return -1000;
-                    }
-                    else
-                    {
-                        return 1000;
-                    }
-                }
-                best.value = 1000;
-                foreach (Piece piece in b.players[(int)b.turn].pieces)
-                {
-                    foreach (Point point in piece.GetPossibleMoves())
-                    {
-                        Board ib = board.PCClone();
-
-                        int val = -1 * ib.moved(piece.position, point) % 100;
-                        lock (locker)
-                        {
-                            if (val < best.value)
-                            {
-                                best = new PieceMovement()
-                                {
-                                    value = val,
-                                    from = piece.position,
-                                    where = point
-                                };
-                            }
-                        }
-
-
-                    }
-                }
-                return best.value;
-            }
-            else 
-            {
-                if(depth==0 && myPiece)
-                {
-                    depth = 1;
-                }
-                if (!myPiece)
-                {
-                    best.value = 1000;
-                }
-                foreach(Piece piece in b.players[(int)b.turn].pieces)
-                {
-                    foreach(Point point in piece.GetPossibleMoves())
-                    {
-                        Board ib=board.PCClone();
-                        int val = 0;
-                        if (myPiece)
-                        {
-                            val = ib.moved(piece.position, point) % 100+ib.players[(int)ib.turn].makeMove(ib,depth-1,color);
-                            if (val > best.value)
-                            {
-                                best = new PieceMovement()
-                                {
-                                    value = val,
-                                    from = piece.position,
-                                    where = point
-                                };
-                            }
-                        }
-                        else
-                        {
-                            val = -1*(ib.moved(piece.position, point) % 100) + ib.players[(int)ib.turn].makeMove(ib, depth - 1, color);
-                            if(val< best.value)
-                            {
-                                best = new PieceMovement()
-                                {
-                                    value = val,
-                                    from = piece.position,
-                                    where = point
-                                };
-                            }
-                        }
-                    }
-                }
-                board.moved(best.from,best.where);
-                Console.WriteLine("koniec=" + best.value);
-                return best.value;
-            }
-            */
+               board.moved(result.from, result.where);
+            form.refreshBoard();
+          
         }
     }
 }

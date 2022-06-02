@@ -107,6 +107,7 @@ namespace Szachy
                     }
                 }
             }
+            
         }
 
         public void reveseBoard()
@@ -134,8 +135,7 @@ namespace Szachy
 
         private void BoardClick(object sender, EventArgs e)
         {
-            lock (lokokontigo)
-            {
+
 
 
 
@@ -177,27 +177,26 @@ namespace Szachy
                 {
                     if (currentPiece != null)
                     {
-                        //Console.WriteLine("a");
                         if (currentPiece.checkMove(position.X, position.Y))
                         {
                             int val = currentPiece.move(position);
                             currentPiece = null;
-                            if (val < 0)
+                            if (val == -200)
                             {
                                 MessageBox.Show("bron krola");
                             }
 
-                            if (val >= 200)
+                            if (val >= 2000)
                             {
                                 MessageBox.Show("szachmat");
-                                val = val % 10;
+                                val = val % 100;
                                 if (board.turn == PlayerColour.WHITE) val = -val;
                                 listBox1.Items.Add(val.ToString() + "#");
                             }
-                            else if (val >= 100)
+                            else if (val >= 1000)
                             {
                                 MessageBox.Show("dales szacha!");
-                                val = val % 10;
+                                val = val % 100;
                                 if (board.turn == PlayerColour.WHITE) val = -val;
                                 listBox1.Items.Add(val.ToString() + "+");
                             }
@@ -207,10 +206,13 @@ namespace Szachy
                                 listBox1.Items.Add(val.ToString());
                             }
                             refreshBoard();
+                            
                             if (!board.players[(int)(board.turn)].realPerson)
                             {
-                                board.players[(int)(board.turn)].makeMove(board, board.turn);
-                                refreshBoard();
+                                
+                            Thread t=new Thread(a=>board.players[(int)(board.turn)].makeMove(board, board.turn,this));
+                            t.Start();
+                            refreshBoard();
                             }
                         }
                         else
@@ -221,7 +223,7 @@ namespace Szachy
                 }
 
 
-            }
+            
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
