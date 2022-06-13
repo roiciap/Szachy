@@ -18,8 +18,12 @@ namespace Szachy
         private Game.Board board;
         Bitmap[,] piecesBitmap;
         Pieces.Piece currentPiece;
-        public Game.Board tmpb;
+        public Game.Board tmpb;//save
         public List<string> movesHistory { get; set; }
+
+        private bool showPossibleMoves { get; set; }
+        private bool showKingAtackedInfo { get; set; }
+
         public Form1(Game.Board chessBoard)
         {
             InitializeComponent();
@@ -29,21 +33,28 @@ namespace Szachy
             board = chessBoard;
             GenerateBoardPanel();
             movesHistory = new List<string>();
+            showKingAtackedInfo = false;
+            showPossibleMoves = false;
         }
-        public Form1()
+        public Form1(Player white,Player black)
         {
             InitializeComponent();
             boardButtons = new Button[8, 8];
             piecesBitmap = new Bitmap[6, 2];
             loadPiecesBitmap();
-            board = new Game.Board(new Game.Gamer(), new Game.PCPlayer());
+            board = new Game.Board(white, black);
             GenerateBoardPanel();
             reveseBoard();
             refreshBoard();
             currentPiece = null;
             tmpb = new Game.Board(new Game.Gamer(), new Game.Gamer());
             movesHistory = new List<string>();
-
+            if (!white.realPerson)
+            {
+                white.makeMove(board, PlayerColour.WHITE, this);
+            }
+            showKingAtackedInfo = false;
+            showPossibleMoves = false;
         }
 
         private void loadPiecesBitmap()
@@ -146,20 +157,22 @@ namespace Szachy
         }
         private void BoardClick(object sender, EventArgs e)
         {
-                    if (!board.players[(int)board.turn].realPerson)
-                    {
-                        return;
-                    }
+            if (!board.players[(int)board.turn].realPerson)
+            {
+                return;
+            }
 
 
-                    Button clickedButton = (Button)sender;
-                    Point position = (Point)clickedButton.Tag;
+            Button clickedButton = (Button)sender;
+            Point position = (Point)clickedButton.Tag;
 
-                    Pieces.Piece clickedPiece = board.getPiece(position.X, position.Y);
-                    refreshBoard();
-                if (clickedPiece.colour == board.turn)
+            Pieces.Piece clickedPiece = board.getPiece(position.X, position.Y);
+            refreshBoard();
+            if (clickedPiece.colour == board.turn)
+            {
+                currentPiece = clickedPiece;
+                if (showPossibleMoves)
                 {
-                    currentPiece = clickedPiece;
                     List<Point> moves = currentPiece.GetPossibleMoves();
 
                     Point zerozero = (Point)boardButtons[0, 0].Tag;
@@ -167,18 +180,23 @@ namespace Szachy
                     {
                         foreach (Point move in moves)
                         {
-                            boardButtons[move.X,7- move.Y].BackColor = Color.Red;
+                            boardButtons[move.X, 7 - move.Y].BackColor = Color.Red;
                         }
                     }
                     else
                     {
                         foreach (Point move in moves)
                         {
-                            boardButtons[7 - move.X,  move.Y].BackColor = Color.Red;
+                            boardButtons[7 - move.X, move.Y].BackColor = Color.Red;
                         }
                     }
-                    return;
                 }
+                else
+                {
+                    clickedButton.BackColor = Color.Red;
+                }
+                return;
+            }
 
             if (clickedPiece.colour != board.turn)
             {
@@ -201,7 +219,8 @@ namespace Szachy
                         currentPiece = null;
                         if (val == -200)
                         {
-                            MessageBox.Show("bron krola");
+                            if (showKingAtackedInfo)
+                                MessageBox.Show("BROŃ KRÓLA !");
                         }
 
 
@@ -209,23 +228,20 @@ namespace Szachy
 
                         if (val >= 2000)
                         {
-                            MessageBox.Show("szachmat");
-                            val = val % 100;
-                            if (board.turn == PlayerColour.WHITE) val = -val;
+                            if (showKingAtackedInfo)
+                                MessageBox.Show("SZACHMAT");
                             listBox1.Items.Add(movement.pgn + "#");
                             refreshBoard();
                             return;
                         }
                         else if (val >= 1000)
                         {
-                            MessageBox.Show("dales szacha!");
-                            val = val % 100;
-                            if (board.turn == PlayerColour.WHITE) val = -val;
+                            if (showKingAtackedInfo)
+                                MessageBox.Show("SZACH");
                             listBox1.Items.Add(movement.pgn + "+");
                         }
-                        else
+                        else if(val!=-200)
                         {
-                            if (board.turn == PlayerColour.WHITE) val = -val;
                             listBox1.Items.Add(movement.pgn);
                         }
                         refreshBoard();
@@ -246,7 +262,7 @@ namespace Szachy
             }
 
 
-            
+
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
@@ -263,6 +279,37 @@ namespace Szachy
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox1.Checked)
+            {
+                showPossibleMoves = true;
+            }
+            else
+            {
+                showPossibleMoves = false;
+            }
+        }
+
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox2.Checked)
+            {
+                showKingAtackedInfo = true;
+            }
+            else
+            {
+                showKingAtackedInfo = false;
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            reveseBoard();
+            currentPiece = null;
+            refreshBoard();
         }
     }
 }

@@ -298,8 +298,8 @@ namespace Szachy.Game
                         {
                             foreach (Point l in p.GetPossibleMoves())
                             {
-                                int xd = p.move(l);
-                                if (xd >= 0)
+                                int responseVal = p.move(l);
+                                if (responseVal!=-200)
                                 {
                                     return 1;//check
                                 }
@@ -424,6 +424,21 @@ namespace Szachy.Game
                         board[from.X, from.Y] = board[to.X, to.Y];
                         board[from.X, from.Y].position = from;
                         board[to.X, to.Y] = backup;
+
+                        for (int i = 0; i < 8; i++)
+                        {
+                            for (int j = 0; j < 8; j++)
+                            {
+                                if (board[i, j].PieceType == PiecesType.NONE)
+                                {
+                                    if (board[i, j].colour == turn)
+                                    {
+                                        board[i, j] = new Pieces.EmptyPiece();
+                                    }
+                                }
+                            }
+                        }
+
                         return -200;
                     }
                     else if (to.Y == 7 || to.Y == 0)

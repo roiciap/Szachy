@@ -338,12 +338,50 @@ namespace Szachy.Game
         public MoveInfo makeMove(Board board,PlayerColour color,Form1 form)
         {
             MoveInfo returnVal=new MoveInfo();
-
+            Console.WriteLine(color);
             bool found = false;
             Point from = new Point(-1, -1), to = new Point(-1, -1);
             string[] files = { "a", "b", "c", "d", "e" };
+            if (!form.movesHistory.Any())
+            {
+                Random random = new Random();
+                int file=random.Next(files.Length);
+                var res = File.ReadAllLines("./openings/" + files[file] + ".tsv");
+                var openingPossibilites = res.Where(l => !l.Contains("Defense"));
+                int openingNumber = random.Next(openingPossibilites.Count());
+                string line = openingPossibilites.ElementAt(openingNumber);
+                var columns=line.Split('\t');
+                if (columns.Length > 2) {
+                    var moves = columns[3].Split(' ');
+                    string toDo = moves[0];
+                    var info = toDo.ToCharArray();
+                    char[] columnsChar = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h' };
+
+                    if (info.Length > 3)
+                    {
+                        for (int j = 0; j < columnsChar.Length; j++)
+                        {
+                            if (info[0].Equals(columnsChar[j])) from = new Point(j, (info[1] - '0') - 1);
+                            if (info[2].Equals(columnsChar[j])) to = new Point(j, (info[3] - '0') - 1);
+                        }
+                        found = true;
+                        int val = board.moved(from, to);
+                        string[] columnsString = { "a", "b", "c", "d", "e", "f", "g", "h" };
+                        string[] pieceString = { "K", "Q", "R", "N", "B", "" };
+                        returnVal = new MoveInfo()
+                        {
+                            uci = toDo,
+                            pgn = pieceString[(int)board.getPiece(to.X, to.Y).PieceType] + columnsString[to.X] + (to.Y + 1),
+                            value = val,
+                        };
+                    }
+                }
+            }
             foreach (string file in files)
             {
+
+
+
                 if (found) break;
                 var res = File.ReadAllLines("./openings/" + file + ".tsv");
 
@@ -351,7 +389,7 @@ namespace Szachy.Game
                 {
                     bool nextLine = false;
                     if (found) break;
-                    if ((color == PlayerColour.BLACK && line.Contains("Defense")) || (color == PlayerColour.WHITE && line.Contains("Opening")))
+                    if ((color == PlayerColour.BLACK && line.Contains("Defense")) || (color == PlayerColour.WHITE && !line.Contains("Defense")))
                     {
                         var columns = line.Split('\t');
                         if (columns.Length > 3)

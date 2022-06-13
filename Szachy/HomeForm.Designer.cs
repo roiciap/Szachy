@@ -41,6 +41,7 @@
             this.GraczVsGracz.TabIndex = 0;
             this.GraczVsGracz.Text = "Gracz vs Gracz";
             this.GraczVsGracz.UseVisualStyleBackColor = true;
+            this.GraczVsGracz.Click += new System.EventHandler(this.GraczVsGracz_Click);
             // 
             // GraczVsKomputer
             // 
@@ -50,6 +51,7 @@
             this.GraczVsKomputer.TabIndex = 1;
             this.GraczVsKomputer.Text = "Gracz vs Komputer";
             this.GraczVsKomputer.UseVisualStyleBackColor = true;
+            this.GraczVsKomputer.Click += new System.EventHandler(this.GraczVsKomputer_Click);
             // 
             // KomputerVsGracz
             // 
@@ -59,6 +61,7 @@
             this.KomputerVsGracz.TabIndex = 2;
             this.KomputerVsGracz.Text = "Komputer vs Gracz";
             this.KomputerVsGracz.UseVisualStyleBackColor = true;
+            this.KomputerVsGracz.Click += new System.EventHandler(this.KomputerVsGracz_Click);
             // 
             // HomeForm
             // 
