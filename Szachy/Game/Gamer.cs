@@ -34,9 +34,9 @@ namespace Szachy.Game
             return attackingPoints;
         }
 
-        public void makeMove(Board board, PlayerColour color, Form1 form)
+        public MoveInfo makeMove(Board board, PlayerColour color, Form1 form)
         {
-
+            return new MoveInfo();
         }
 
         public List<MovementAndValue> GetAllMovementsWithValues()

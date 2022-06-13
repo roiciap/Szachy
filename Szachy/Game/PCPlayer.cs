@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -16,22 +17,17 @@ namespace Szachy.Game
         public Point from { get; set; }
         public int moves { get; set; }
     }
-    class moves
-    {
-        public moves()
-        {
-           movements=new List<PieceMovement>();
-        }
-        public List<PieceMovement> movements;
-    }
+   
 
     public class PCPlayer : Player
     {
+        private int movesMade { get; set; }
         public static int gameEndedValue = 8888;
         public static int searchDepth = 3;
         public PCPlayer()
         {
             pieces = new List<Pieces.Piece>();
+            movesMade = 0;
         }
 
         public bool realPerson => false;
@@ -111,7 +107,7 @@ namespace Szachy.Game
                         int totalValue;
                         var clone = board.PCClone();
                         int value = clone.moved(piece.position, point);
-                        if (value == -2)
+                        if (value ==-200)
                         {
                             continue;
                         }
@@ -119,7 +115,7 @@ namespace Szachy.Game
                         {
                             canMove = true;
                         }
-                        if (value >= 2000)
+                        if (value >= 1900)
                         {
                             if (myTurn)
                             {
@@ -145,9 +141,9 @@ namespace Szachy.Game
                         }
 
                         if (myTurn)
-                         totalValue= value%1000 + prevValue;
+                         totalValue= value%100 + prevValue;
                         else
-                            totalValue= prevValue - value%1000;
+                            totalValue= prevValue - value%100;
                         if(myTurn && totalValue > best.value) 
                         { 
                             best.value = totalValue;
@@ -159,6 +155,7 @@ namespace Szachy.Game
                                 max = best.value;
                                 if (min <= max)
                                 {
+                                   
                                     return best;
                                 }
                             }
@@ -174,6 +171,7 @@ namespace Szachy.Game
                                 min = best.value;
                                 if (min <= max)
                                 {
+                                   
                                     return best;
                                 }
                             }
@@ -200,7 +198,7 @@ namespace Szachy.Game
                         PieceMovement totalValue;
                         var clone = board.PCClone();
                         int value = clone.moved(piece.position, point);
-                        if (value == -2)
+                        if (value == -200)
                         {
                             continue;
                         }
@@ -208,7 +206,7 @@ namespace Szachy.Game
                         {
                             canMove = true;
                         }
-                        if (value >= 2000)
+                        if (value >= 1900)
                         {
                             if (myTurn)
                             {
@@ -234,9 +232,9 @@ namespace Szachy.Game
                         }
 
                         if (myTurn)
-                            totalValue = minmax(clone, color, depth - 1, value%1000 + prevValue, max, min);
+                            totalValue = minmax(clone, color, depth - 1, value%100 + prevValue, max, min);
                         else
-                            totalValue = minmax(clone, color, depth - 1, prevValue - value%1000, max, min);
+                            totalValue = minmax(clone, color, depth - 1, prevValue - value%100, max, min);
 
 
 
@@ -264,6 +262,7 @@ namespace Szachy.Game
                                     max = best.value;
                                     if (min <= max)
                                     {
+                                       
                                         return best;
                                     }
                                 }
@@ -283,6 +282,7 @@ namespace Szachy.Game
                                     min = best.value;
                                     if (min <= max)
                                     {
+                                       
                                         return best;
                                     }
                                 }
@@ -310,7 +310,7 @@ namespace Szachy.Game
                         Console.WriteLine(piece.position.X + "/" + piece.position.Y + "-" + piece.PieceType + "," + piece.colour);
                     }
                 }
-                return best;
+                return best;//zwroc najlepszy ruch
             }
             else
             {//pat
@@ -335,14 +335,93 @@ namespace Szachy.Game
 
         }
    
-        public void makeMove(Board board,PlayerColour color,Form1 form)
+        public MoveInfo makeMove(Board board,PlayerColour color,Form1 form)
         {
-            var  result= minmax(board, color, searchDepth,0, -99999, 99999);
+            MoveInfo returnVal=new MoveInfo();
 
-               Console.WriteLine(result.value+","+result.moves+":"+result.from.X+"/"+result.from.Y+"->" + result.where.X + "/" + result.where.Y);
-               board.moved(result.from, result.where);
+            bool found = false;
+            Point from = new Point(-1, -1), to = new Point(-1, -1);
+            string[] files = { "a", "b", "c", "d", "e" };
+            foreach (string file in files)
+            {
+                if (found) break;
+                var res = File.ReadAllLines("./openings/" + file + ".tsv");
+
+                foreach (var line in res)
+                {
+                    bool nextLine = false;
+                    if (found) break;
+                    if ((color == PlayerColour.BLACK && line.Contains("Defense")) || (color == PlayerColour.WHITE && line.Contains("Opening")))
+                    {
+                        var columns = line.Split('\t');
+                        if (columns.Length > 3)
+                        {
+                            var ucis = columns[3];
+                            var moves = ucis.Split(' ');
+                            if (moves.Length <= form.movesHistory.Count) continue;
+
+                            foreach (string mh in form.movesHistory)
+                            {
+                                if (!moves.Contains(mh)) nextLine = true;
+                            }
+                            if (nextLine) continue;
+
+                            for (int i = 0; i < form.movesHistory.Count; i++)//sprawdz czy to aktualna pozycja
+                            {
+                                if (!form.movesHistory.Contains(moves[i])) nextLine = true;
+                            }
+
+                            if (nextLine) continue;
+
+                            string toDo = moves[form.movesHistory.Count];
+                            var info = toDo.ToCharArray();
+                            char[] columnsChar = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h' };
+
+                            if (info.Length > 3)
+                            {
+                                for (int j = 0; j < columnsChar.Length; j++)
+                                {
+                                    if (info[0].Equals(columnsChar[j])) from = new Point(j, (info[1] - '0') - 1);
+                                    if (info[2].Equals(columnsChar[j])) to = new Point(j, (info[3] - '0') - 1);
+                                }
+                                found = true;
+                                int val = board.moved(from, to);
+                                string[] columnsString = { "a", "b", "c", "d", "e", "f", "g", "h" };
+                                string[] pieceString = { "K", "Q", "R", "N", "B", "" };
+                                returnVal = new MoveInfo()
+                                {
+                                    uci = toDo,
+                                    pgn = pieceString[(int)board.getPiece(to.X, to.Y).PieceType] + columnsString[to.X] + (to.Y + 1),
+                                    value = val,
+                                };
+                            }
+
+
+                        }
+                    }
+                }
+            }
+            if (!found || returnVal.value==-200)
+            {
+
+                    var result = minmax(board, color, searchDepth, 0, -99999, 99999);
+
+                    Console.WriteLine(result.value + "," + result.moves + ":" + result.from.X + "/" + result.from.Y + "->" + result.where.X + "/" + result.where.Y);
+                    board.moved(result.from, result.where);
+                    string[] columns = { "a", "b", "c", "d", "e", "f", "g", "h" };
+                    string[] pieceString = { "K", "Q", "R", "N", "B", "" };
+                    returnVal = new MoveInfo()
+                    {
+                        uci = columns[result.from.X] + (result.from.Y + 1) + columns[result.where.Y] + (result.where.X + 1),
+                        pgn = pieceString[(int)board.getPiece(result.where.X, result.where.Y).PieceType] + columns[result.where.X] + (result.where.Y + 1),
+                        value = result.value,
+                    };
+                
+            }
             form.refreshBoard();
-          
+            form.AddMoveHistory(returnVal.pgn);
+            form.movesHistory.Add(returnVal.uci);
+          return returnVal;
         }
     }
 }

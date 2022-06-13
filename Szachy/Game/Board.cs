@@ -10,9 +10,6 @@ namespace Szachy.Game
 
     public class Board
     {
-        
-
-
         private Pieces.Piece[, ] board;
 
         public PlayerColour turn;
@@ -38,37 +35,37 @@ namespace Szachy.Game
                                  5, 10, 10,-20,-20, 10, 10,  5,
                                  0,  0,  0,  0,  0,  0,  0,  0};
         public static int[] BishopPos ={-20,-10,-10,-10,-10,-10,-10,-20,
-                                -10,  0,  0,  0,  0,  0,  0,-10,
-                                -10,  0,  5, 10, 10,  5,  0,-10,
-                                -10,  5,  5, 10, 10,  5,  5,-10,
-                                -10,  0, 10, 10, 10, 10,  0,-10,
-                                -10, 10, 10, 10, 10, 10, 10,-10,
-                                -10,  5,  0,  0,  0,  0,  5,-10,
-                                -20,-10,-10,-10,-10,-10,-10,-20};
+                                        -10,  0,  0,  0,  0,  0,  0,-10,
+                                        -10,  0,  5, 10, 10,  5,  0,-10,
+                                        -10,  5,  5, 10, 10,  5,  5,-10,
+                                        -10,  0, 10, 10, 10, 10,  0,-10,
+                                        -10, 10, 10, 10, 10, 10, 10,-10,
+                                        -10,  5,  0,  0,  0,  0,  5,-10,
+                                        -20,-10,-10,-10,-10,-10,-10,-20};
         public static int[] RookPos={  0,  0,  0,  0,  0,  0,  0,  0,
-                                  5, 10, 10, 10, 10, 10, 10,  5,
-                                 -5,  0,  0,  0,  0,  0,  0, -5,
-                                 -5,  0,  0,  0,  0,  0,  0, -5,
-                                 -5,  0,  0,  0,  0,  0,  0, -5,
-                                 -5,  0,  0,  0,  0,  0,  0, -5,
-                                 -5,  0,  0,  0,  0,  0,  0, -5,
+                                      5, 10, 10, 10, 10, 10, 10,  5,
+                                     -5,  0,  0,  0,  0,  0,  0, -5,
+                                     -5,  0,  0,  0,  0,  0,  0, -5,
+                                     -5,  0,  0,  0,  0,  0,  0, -5,
+                                     -5,  0,  0,  0,  0,  0,  0, -5,
+                                     -5,  0,  0,  0,  0,  0,  0, -5,
                                   0,  0,  0,  5,  5,  0,  0,  0 };
         public static int[] QueenPos ={-20,-10,-10, -5, -5,-10,-10,-20,
-                                -10,  0,  0,  0,  0,  0,  0,-10,
-                                -10,  0,  5,  5,  5,  5,  0,-10,
-                                 -5,  0,  5,  5,  5,  5,  0, -5,
-                                  0,  0,  5,  5,  5,  5,  0, -5,
-                                -10,  5,  5,  5,  5,  5,  0,-10,
-                                -10,  0,  5,  0,  0,  0,  0,-10,
-                                -20,-10,-10, -5, -5,-10,-10,-20};
+                                    -10,  0,  0,  0,  0,  0,  0,-10,
+                                    -10,  0,  5,  5,  5,  5,  0,-10,
+                                     -5,  0,  5,  5,  5,  5,  0, -5,
+                                      0,  0,  5,  5,  5,  5,  0, -5,
+                                    -10,  5,  5,  5,  5,  5,  0,-10,
+                                    -10,  0,  5,  0,  0,  0,  0,-10,
+                                    -20,-10,-10, -5, -5,-10,-10,-20};
         public static int[] KingPos ={-30,-40,-40,-50,-50,-40,-40,-30,
-                                -30,-40,-40,-50,-50,-40,-40,-30,
-                                -30,-40,-40,-50,-50,-40,-40,-30,
-                                -30,-40,-40,-50,-50,-40,-40,-30,
-                                -20,-30,-30,-40,-40,-30,-30,-20,
-                                -10,-20,-20,-20,-20,-20,-20,-10,
-                                 20, 20,  0,  0,  0,  0, 20, 20,
-                                 20, 30, 10,  0,  0, 10, 30, 20};
+                                    -30,-40,-40,-50,-50,-40,-40,-30,
+                                    -30,-40,-40,-50,-50,-40,-40,-30,
+                                    -30,-40,-40,-50,-50,-40,-40,-30,
+                                    -20,-30,-30,-40,-40,-30,-30,-20,
+                                    -10,-20,-20,-20,-20,-20,-20,-10,
+                                     20, 20,  0,  0,  0,  0, 20, 20,
+                                     20, 30, 10,  0,  0, 10, 30, 20};
         public Board(Player White , Player Black)
         {
             board = new Pieces.Piece[8, 8];
@@ -155,32 +152,32 @@ namespace Szachy.Game
                 }
             }
 
-             for (int i = 0; i < 8; i++)
-               {
-                  board[i, 1] = new Pieces.Pawn(PlayerColour.WHITE, i, 1, this);
-                 board[i, 6] = new Pieces.Pawn(PlayerColour.BLACK, i, 6, this);
-               }
-             
-              // board[4, 0] = new Pieces.King(PlayerColour.WHITE, 4, 0, this);
-               //board[4, 7] = new Pieces.King(PlayerColour.BLACK, 4, 7, this);
-               board[3, 0] = new Pieces.Queen(PlayerColour.WHITE, 3, 0, this);
-               board[3, 7] = new Pieces.Queen(PlayerColour.BLACK, 3, 7, this);
-               board[0, 0] = new Pieces.Rook(PlayerColour.WHITE, 0, 0, this);
-              // board[7,0]=new Pieces.Rook(PlayerColour.WHITE,7,0, this);
-               board[0, 7] = new Pieces.Rook(PlayerColour.BLACK, 0, 7, this);
-               //board[7, 7] = new Pieces.Rook(PlayerColour.BLACK, 7, 7, this);
-              board[1, 0] = new Pieces.Knight(PlayerColour.WHITE, 1, 0, this);
-              // board[6, 0] = new Pieces.Knight(PlayerColour.WHITE, 6, 0, this);
-               board[1, 7] = new Pieces.Knight(PlayerColour.BLACK, 1, 7, this);
-               //board[6, 7] = new Pieces.Knight(PlayerColour.BLACK, 6, 7, this);
-             board[2, 0] = new Pieces.Bishop(PlayerColour.WHITE, 2, 0, this);
-             // board[5, 0] = new Pieces.Bishop(PlayerColour.WHITE, 5, 0, this);
-              board[2, 7] = new Pieces.Bishop(PlayerColour.BLACK, 2, 7, this);
-             // board[5, 7] = new Pieces.Bishop(PlayerColour.BLACK, 5, 7, this);
+            for (int i = 0; i < 8; i++)
+            {
+                board[i, 1] = new Pieces.Pawn(PlayerColour.WHITE, i, 1, this);
+                board[i, 6] = new Pieces.Pawn(PlayerColour.BLACK, i, 6, this);
+            }
 
+                board[4, 0] = new Pieces.King(PlayerColour.WHITE, 4, 0, this);//
+                board[4, 7] = new Pieces.King(PlayerColour.BLACK, 4, 7, this);//
+                board[3, 0] = new Pieces.Queen(PlayerColour.WHITE, 3, 0, this);
+                board[3, 7] = new Pieces.Queen(PlayerColour.BLACK, 3, 7, this);
+                board[0, 0] = new Pieces.Rook(PlayerColour.WHITE, 0, 0, this);
+                board[7, 0] = new Pieces.Rook(PlayerColour.WHITE, 7, 0, this);//
+                board[0, 7] = new Pieces.Rook(PlayerColour.BLACK, 0, 7, this);
+                board[7, 7] = new Pieces.Rook(PlayerColour.BLACK, 7, 7, this);//
+                board[1, 0] = new Pieces.Knight(PlayerColour.WHITE, 1, 0, this);
+                board[6, 0] = new Pieces.Knight(PlayerColour.WHITE, 6, 0, this);//
+                board[1, 7] = new Pieces.Knight(PlayerColour.BLACK, 1, 7, this);
+                board[6, 7] = new Pieces.Knight(PlayerColour.BLACK, 6, 7, this);//
+                board[2, 0] = new Pieces.Bishop(PlayerColour.WHITE, 2, 0, this);
+                board[5, 0] = new Pieces.Bishop(PlayerColour.WHITE, 5, 0, this);//
+                board[2, 7] = new Pieces.Bishop(PlayerColour.BLACK, 2, 7, this);
+                board[5, 7] = new Pieces.Bishop(PlayerColour.BLACK, 5, 7, this);//
+            
             /*
 
-                       */
+                     
             board[6, 0] = new Pieces.King(PlayerColour.WHITE, 6, 0, this);
             board[6, 7] = new Pieces.King(PlayerColour.BLACK, 6, 7, this);
             board[5, 0] = new Pieces.Rook(PlayerColour.WHITE, 5, 0, this);
@@ -202,6 +199,7 @@ namespace Szachy.Game
             SETTINGS.castle[0, 1] = false;
             SETTINGS.castle[1, 0] = false;
             SETTINGS.castle[1, 1] = false;
+              */
         }
 
         public Pieces.Piece getPiece(int x , int y)
@@ -303,7 +301,7 @@ namespace Szachy.Game
                                 int xd = p.move(l);
                                 if (xd >= 0)
                                 {
-                                    return 1;
+                                    return 1;//check
                                 }
                             }
                         }
@@ -322,13 +320,14 @@ namespace Szachy.Game
             {
                 if (to.X >= 0 && to.Y >= 0 && to.X < 8 && to.Y < 8)
                 {
+                    if (!board[from.X, from.Y].checkMove(to.X, to.Y)) return -200;
                     if(board[from.X,from.Y].colour != turn)
                     {
-                        return -100;
+                        return -200;
                     }
                     int value=board[to.X,to.Y].Value*10;
-                    int initialPosValue= Board.getPositionValue(board[from.X, from.Y].PieceType, from, board[from.X, from.Y].colour);
-                    if (value == 1) {//jezeli atakujemy miejsce gdzie mozna wykonać bicie w przelocie a figura to nie pion
+                    //int initialPosValue= Board.getPositionValue(board[from.X, from.Y].PieceType, from, board[from.X, from.Y].colour);
+                    if (value == 10) {//jezeli atakujemy miejsce gdzie mozna wykonać bicie w przelocie a figura to nie pion
                         if (board[to.X, to.Y].PieceType == PiecesType.NONE)
                         {
                             if (board[from.X, from.Y].PieceType != PiecesType.PAWN)
@@ -436,14 +435,14 @@ namespace Szachy.Game
                             value += 80;
                         }
                     }
-                    value += Board.getPositionValue(board[to.X, to.Y].PieceType, to, board[to.X, to.Y].colour)-initialPosValue;
+                    value += Board.getPositionValue(board[to.X, to.Y].PieceType, to, board[to.X, to.Y].colour);//-initialPosValue;
                     if (check == 1)
                     {
                         value += 1000;
                     }
                     else if (check == 2)
                     {
-                        value += 2000;
+                        value += 2200;
                     }
 
 
@@ -481,7 +480,7 @@ namespace Szachy.Game
                     
                 }
             }
-            return -1;
+            return -200;
         }
 
        
@@ -505,9 +504,9 @@ namespace Szachy.Game
             Player white=new Gamer();
             Player black=new Gamer();
             if(!players[1].realPerson)
-              white=new Gamer();
+              white=new PCPlayer();
             if(!players[0].realPerson)
-             black=new Gamer();
+             black=new PCPlayer();
             BoardSettings setings=new BoardSettings(SETTINGS.castle);
             Board clone = new Board(white, black, setings); 
 

@@ -15,7 +15,7 @@ namespace Szachy.Game
 
         List<Point> getAttackingPoints();
 
-        void makeMove(Board board, PlayerColour color,Form1 form);
+        MoveInfo makeMove(Board board, PlayerColour color,Form1 form);
         List<MovementAndValue> GetAllMovementsWithValues();
 
 

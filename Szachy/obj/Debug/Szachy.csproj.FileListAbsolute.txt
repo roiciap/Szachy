@@ -36,3 +36,4 @@ C:\Users\Adrian\source\repos\a\Szachy\Szachy\obj\Debug\Szachy.csproj.CoreCompile
 C:\Users\Adrian\source\repos\a\Szachy\Szachy\obj\Debug\Szachy.exe
 C:\Users\Adrian\source\repos\a\Szachy\Szachy\obj\Debug\Szachy.pdb
 C:\Users\Bazyl\source\repos\Szachy\Szachy\obj\Debug\Szachy.csproj.SuggestedBindingRedirects.cache
+C:\Users\Bazyl\source\repos\Szachy\Szachy\obj\Debug\Szachy.HomeForm.resources

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Szachy.Game;
 
 namespace Szachy
 {
@@ -17,9 +18,8 @@ namespace Szachy
         private Game.Board board;
         Bitmap[,] piecesBitmap;
         Pieces.Piece currentPiece;
-        object lokokontigo;
         public Game.Board tmpb;
-
+        public List<string> movesHistory { get; set; }
         public Form1(Game.Board chessBoard)
         {
             InitializeComponent();
@@ -28,6 +28,7 @@ namespace Szachy
             loadPiecesBitmap();
             board = chessBoard;
             GenerateBoardPanel();
+            movesHistory = new List<string>();
         }
         public Form1()
         {
@@ -37,11 +38,11 @@ namespace Szachy
             loadPiecesBitmap();
             board = new Game.Board(new Game.Gamer(), new Game.PCPlayer());
             GenerateBoardPanel();
-           // reveseBoard();
+            reveseBoard();
             refreshBoard();
             currentPiece = null;
             tmpb = new Game.Board(new Game.Gamer(), new Game.Gamer());
-            lokokontigo = new Pieces.EmptyPiece();
+            movesHistory = new List<string>();
 
         }
 
@@ -84,11 +85,13 @@ namespace Szachy
 
         public void refreshBoard()
         {
+            string[] linie = { "A", "B", "C", "D", "E", "F", "G", "H" };
             for(int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
                 {
                     Point pos = (Point)boardButtons[i, j].Tag;
+                  //  boardButtons[i, j].Text = (linie[pos.X] + " " + (pos.Y+1));
                     if (pos.X % 2 == pos.Y % 2)
                     {
                         boardButtons[i, j].BackColor = Color.White;
@@ -132,13 +135,17 @@ namespace Szachy
             }
         }
 
+        public void AddMoveHistory(string pgn)
+        {
+         //   listBox1.Items.Add(pgn);
+        }
 
+        public ListBox.ObjectCollection getMoveHistory()
+        {
+            return listBox1.Items;
+        }
         private void BoardClick(object sender, EventArgs e)
         {
-
-
-
-
                     if (!board.players[(int)board.turn].realPerson)
                     {
                         return;
@@ -173,54 +180,70 @@ namespace Szachy
                     return;
                 }
 
-                if (clickedPiece.colour != board.turn)
+            if (clickedPiece.colour != board.turn)
+            {
+                if (currentPiece != null)
                 {
-                    if (currentPiece != null)
+                    if (currentPiece.checkMove(position.X, position.Y))
                     {
-                        if (currentPiece.checkMove(position.X, position.Y))
+                        string[] columns = { "a", "b", "c", "d", "e", "f", "g", "h" };
+                        string[] pieceString = { "K", "Q", "R", "N", "B", "" };
+                        var movement = new MoveInfo()
                         {
-                            int val = currentPiece.move(position);
-                            currentPiece = null;
-                            if (val == -200)
-                            {
-                                MessageBox.Show("bron krola");
-                            }
+                            uci = columns[currentPiece.position.X] + (currentPiece.position.Y + 1) + columns[position.X] + (position.Y + 1),
+                            pgn = pieceString[(int)currentPiece.PieceType] + columns[position.X] + (position.Y + 1),
+                            value = 0
+                        };
 
-                            if (val >= 2000)
-                            {
-                                MessageBox.Show("szachmat");
-                                val = val % 100;
-                                if (board.turn == PlayerColour.WHITE) val = -val;
-                                listBox1.Items.Add(val.ToString() + "#");
-                            }
-                            else if (val >= 1000)
-                            {
-                                MessageBox.Show("dales szacha!");
-                                val = val % 100;
-                                if (board.turn == PlayerColour.WHITE) val = -val;
-                                listBox1.Items.Add(val.ToString() + "+");
-                            }
-                            else
-                            {
-                                if (board.turn == PlayerColour.WHITE) val = -val;
-                                listBox1.Items.Add(val.ToString());
-                            }
+                        int val = currentPiece.move(position);
+                        movement.value = val;
+                        movesHistory.Add(movement.uci);
+                        currentPiece = null;
+                        if (val == -200)
+                        {
+                            MessageBox.Show("bron krola");
+                        }
+
+
+
+
+                        if (val >= 2000)
+                        {
+                            MessageBox.Show("szachmat");
+                            val = val % 100;
+                            if (board.turn == PlayerColour.WHITE) val = -val;
+                            listBox1.Items.Add(movement.pgn + "#");
                             refreshBoard();
-                            
-                            if (!board.players[(int)(board.turn)].realPerson)
-                            {
-                                
-                            Thread t=new Thread(a=>board.players[(int)(board.turn)].makeMove(board, board.turn,this));
-                            t.Start();
-                            refreshBoard();
-                            }
+                            return;
+                        }
+                        else if (val >= 1000)
+                        {
+                            MessageBox.Show("dales szacha!");
+                            val = val % 100;
+                            if (board.turn == PlayerColour.WHITE) val = -val;
+                            listBox1.Items.Add(movement.pgn + "+");
                         }
                         else
                         {
-                            currentPiece = null;
+                            if (board.turn == PlayerColour.WHITE) val = -val;
+                            listBox1.Items.Add(movement.pgn);
+                        }
+                        refreshBoard();
+
+                        if (!board.players[(int)(board.turn)].realPerson)
+                        {
+                            Thread t = new Thread(a => board.players[(int)(board.turn)].makeMove(board, board.turn, this));
+                            t.Start();
+
+                            refreshBoard();
                         }
                     }
+                    else
+                    {
+                        currentPiece = null;
+                    }
                 }
+            }
 
 
             
